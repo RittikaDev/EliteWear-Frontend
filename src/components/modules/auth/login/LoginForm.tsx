@@ -1,5 +1,9 @@
 "use client";
-import ReCAPTCHA from "react-google-recaptcha";
+
+import { useState } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import {
 	Form,
@@ -10,14 +14,15 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import Link from "next/link";
+
 import Logo from "@/app/assets/svgs/Logo";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
+
 import { toast } from "sonner";
+import ReCAPTCHA from "react-google-recaptcha";
+
 import { loginSchema } from "./loginValidation";
-import { useState } from "react";
 
 export default function LoginForm() {
 	const form = useForm({
@@ -33,9 +38,7 @@ export default function LoginForm() {
 	const handleReCaptcha = async (value: string | null) => {
 		try {
 			const res = await reCaptchaTokenVerification(value!);
-			if (res?.success) {
-				setReCaptchaStatus(true);
-			}
+			if (res?.success) setReCaptchaStatus(true);
 		} catch (err: any) {
 			console.error(err);
 		}
@@ -44,77 +47,109 @@ export default function LoginForm() {
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		try {
 			const res = await loginUser(data);
-			if (res?.success) {
-				toast.success(res?.message);
-			} else {
-				toast.error(res?.message);
-			}
+			if (res?.success) toast.success(res?.message);
+			else toast.error(res?.message);
 		} catch (err: any) {
 			console.error(err);
 		}
 	};
 
 	return (
-		<div className="border-2 border-gray-300 rounded-xl flex-grow max-w-md w-full p-5">
-			<div className="flex items-center space-x-4 ">
-				<Logo />
-				<div>
-					<h1 className="text-xl font-semibold">Login</h1>
-					<p className="font-extralight text-sm text-gray-600">Welcome back!</p>
-				</div>
-			</div>
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)}>
-					<FormField
-						control={form.control}
-						name="email"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Email</FormLabel>
-								<FormControl>
-									<Input type="email" {...field} value={field.value || ""} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-					<FormField
-						control={form.control}
-						name="password"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Password</FormLabel>
-								<FormControl>
-									<Input type="password" {...field} value={field.value || ""} />
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+		<div className="relative w-full h-screen flex items-center justify-center">
+			{/* Background Video */}
+			<video
+				autoPlay
+				loop
+				muted
+				className="absolute inset-0 w-full h-full object-cover"
+			>
+				<source src="/videos/login_bg_videp.mp4" type="video/mp4" />
+			</video>
 
-					<div className="flex mt-3 w-full">
-						<ReCAPTCHA
-							sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY!}
-							onChange={handleReCaptcha}
-							className="mx-auto"
-						/>
+			{/* Dark Overlay */}
+			<div className="absolute inset-0 bg-black/50"></div>
+			{/* <div className="border border-gray-200 bg-white shadow-lg rounded-2xl p-6 max-w-md w-full"> */}
+			<div className="relative z-10 bg-white/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 max-w-md w-full">
+				<div className="flex items-center space-x-4 mb-4">
+					<Logo />
+					<div>
+						<h1 className="text-2xl font-bold text-gray-300">Login</h1>
+						<p className="text-sm text-gray-400">
+							Welcome back! Please login to your account.
+						</p>
 					</div>
+				</div>
+				{/* {...form} => SPREADING THE FORM OBJECT TO PROVIDE GLOBAL FORM STATE AND VALIDATION */}
+				<Form {...form}>
+					<form onSubmit={form.handleSubmit(onSubmit)}>
+						{/* control={form.control} => CONNECTS THIS FIELD TO REACT-HOOK-FORM */}
+						{/* render={({ field }) => (...)} => USES A RENDER PROP TO PASS FIELD PROPERTIES */}
+						<FormField
+							control={form.control}
+							name="email"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-gray-300">Email</FormLabel>
+									<FormControl>
+										{/* {...field} => SPREADS ALL PROPERTIES FROM REACT-HOOK-FORM (LIKE ONCHANGE, VALUE, ONBLUR) */}
+										<Input
+											type="email"
+											{...field}
+											value={field.value || ""}
+											className="bg-gray-400 border-gray-300 focus:border-primary focus:ring-primary"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={form.control}
+							name="password"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-gray-300">Password</FormLabel>
+									<FormControl>
+										<Input
+											type="password"
+											{...field}
+											value={field.value || ""}
+											className="bg-gray-400 border-gray-300 focus:border-primary focus:ring-primary"
+										/>
+									</FormControl>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 
-					<Button
-						disabled={reCaptchaStatus ? false : true}
-						type="submit"
-						className="mt-5 w-full"
+						<div className="mt-4 flex justify-center rounded-lg w-full bg-white/20 backdrop-blur-lg">
+							<div style={{ transform: "scale(0.8)" }}>
+								<ReCAPTCHA
+									sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_KEY!}
+									onChange={handleReCaptcha}
+								/>
+							</div>
+						</div>
+
+						<Button
+							disabled={!reCaptchaStatus}
+							type="submit"
+							className="mt-5 w-full bg-primary text-white hover:bg-primary-dark transition"
+						>
+							{isSubmitting ? "Logging in..." : "Login"}
+						</Button>
+					</form>
+				</Form>
+				<p className="text-sm text-gray-400 text-center mt-4">
+					Don&apos;t have an account?{" "}
+					<Link
+						href="/register"
+						className="text-primary font-medium hover:underline"
 					>
-						{isSubmitting ? "Logging...." : "Login"}
-					</Button>
-				</form>
-			</Form>
-			<p className="text-sm text-gray-600 text-center my-3">
-				Do not have any account ?
-				<Link href="/register" className="text-primary">
-					Register
-				</Link>
-			</p>
+						Register
+					</Link>
+				</p>
+			</div>
 		</div>
 	);
 }
