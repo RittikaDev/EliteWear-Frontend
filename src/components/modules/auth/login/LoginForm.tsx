@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import Logo from "@/app/assets/svgs/Logo";
+// import Logo from "@/app/assets/svgs/Logo";
+import Logo from "@/app/assets/svgs/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
 
@@ -23,6 +24,7 @@ import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import { loginSchema } from "./loginValidation";
+import Image from "next/image";
 
 export default function LoginForm() {
 	const form = useForm({
@@ -69,16 +71,23 @@ export default function LoginForm() {
 			{/* Dark Overlay */}
 			<div className="absolute inset-0 bg-black/50"></div>
 			{/* <div className="border border-gray-200 bg-white shadow-lg rounded-2xl p-6 max-w-md w-full"> */}
-			<div className="relative z-10 bg-white/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 max-w-md w-full">
-				<div className="flex items-center space-x-4 mb-4">
-					<Logo />
-					<div>
-						<h1 className="text-2xl font-bold text-gray-300">Login</h1>
-						<p className="text-sm text-gray-400">
-							Welcome back! Please login to your account.
-						</p>
-					</div>
+			<div className="relative z-10 bg-white/20 backdrop-blur-lg shadow-lg rounded-2xl p-6 max-w-lg w-full">
+				<div className="flex flex-col items-center justify-center text-center mb-4">
+					{/* Logo */}
+					<Image
+						src={Logo}
+						alt="Logo"
+						width={70}
+						height={70}
+						className="mb-2"
+					/>
+
+					{/* Login Heading */}
+					<h1 className="text-2xl font-bold text-gray-300">
+						Login to Get Started
+					</h1>
 				</div>
+
 				{/* {...form} => SPREADING THE FORM OBJECT TO PROVIDE GLOBAL FORM STATE AND VALIDATION */}
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(onSubmit)}>
