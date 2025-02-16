@@ -24,7 +24,9 @@ import {
 import { NavMain } from "./nav-main";
 import { NavUser } from "./nav-user";
 import Link from "next/link";
-import Logo from "@/app/assets/svgs/Logo";
+// import Logo from "@/app/assets/svgs/Logo";
+import Brand from "@/app/assets/svgs/Brand.png";
+import Image from "next/image";
 
 const data = {
 	navMain: [
@@ -106,7 +108,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 						<SidebarMenuButton size="lg" asChild>
 							<Link href="/">
 								<div className="flex items-center justify-center">
-									<Logo />
+									<Image src={Brand} alt="Logo" width={60} height={60} />
 								</div>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<h2 className="font-bold text-xl">EliteWear</h2>

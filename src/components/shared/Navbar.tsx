@@ -1,14 +1,17 @@
-import Logo from "@/app/assets/svgs/Logo";
+// import Logo from "@/app/assets/svgs/Logo";
+import Brand from "@/app/assets/svgs/Brand.png";
 import { Button } from "../ui/button";
 import { Heart, ShoppingBag } from "lucide-react";
+import Image from "next/image";
 
 export default function Navbar() {
 	return (
 		<header className="border-b w-full">
 			<div className="container flex justify-between items-center mx-auto h-16 px-3">
-				<h1 className="text-2xl font-black flex items-center">
-					<Logo />
-					Next Mart
+				<h1 className="text-2xl font-black flex items-center gap-1">
+					{/* <Logo /> */}
+					<Image src={Brand} alt="Logo" width={60} height={60} />
+					Elite Wear
 				</h1>
 				<div className="max-w-md  flex-grow">
 					<input
