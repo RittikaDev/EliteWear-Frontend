@@ -18,13 +18,16 @@ import { Input } from "@/components/ui/input";
 // import Logo from "@/app/assets/svgs/Logo";
 import Logo from "@/app/assets/svgs/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
+// import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
+import { reCaptchaTokenVerification } from "@/services/AuthService";
 
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import { loginSchema } from "./loginValidation";
 import Image from "next/image";
+import SocialLogin from "../SocialLogin/social-login";
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
 	const form = useForm({
@@ -48,9 +51,16 @@ export default function LoginForm() {
 
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		try {
-			const res = await loginUser(data);
-			if (res?.success) toast.success(res?.message);
-			else toast.error(res?.message);
+			// const res = await loginUser(data);
+			// if (res?.success) toast.success(res?.message);
+			// else toast.error(res?.message);
+
+			await signIn("credentials", {
+				email: data.email,
+				password: data.password,
+				redirect: true,
+				callbackUrl: "http://localhost:3000/",
+			});
 		} catch (err: any) {
 			console.error(err);
 		}
@@ -149,6 +159,9 @@ export default function LoginForm() {
 						</Button>
 					</form>
 				</Form>
+
+				<SocialLogin />
+
 				<p className="text-sm text-gray-400 text-center mt-4">
 					Don&apos;t have an account?{" "}
 					<Link
