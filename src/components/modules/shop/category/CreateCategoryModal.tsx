@@ -47,7 +47,7 @@ const CreateCategoryModal = () => {
 			} else {
 				toast.error(res?.message);
 			}
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error(err);
 		}
 	};
@@ -61,16 +61,20 @@ const CreateCategoryModal = () => {
 				<DialogHeader>
 					<DialogTitle>Create Product Category</DialogTitle>
 				</DialogHeader>
-
+				{/* THE <FORM> COMPONENT IS A WRAPPER AROUND THE FORM ELEMENTS.
+				{...FORM} SPREADS THE FORM OBJECT, PASSING ALL FORM PROPERTIES (CONTROL, METHODS, ETC.). */}
 				<Form {...form}>
+					{/* FORM.HANDLESUBMIT(ONSUBMIT) IS A METHOD FROM REACT-HOOK-FORM. IT VALIDATES THE FORM AND CALLS ONSUBMIT IF THERE ARE NO ERRORS. */}
 					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<FormField
-							control={form.control}
+							control={form.control} // TIES THE FIELD TO REACT-HOOK-FORM CONTROL.
 							name="name"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Name</FormLabel>
 									<FormControl>
+										{/* {...field} BINDS THE INPUT TO REACT-HOOK-FORM (HANDLES VALUE, ONCHANGE, ETC.).
+										value={field.value || ""} => ENSURES THE INPUT DOESN’T SHOW UNDEFINED. */}
 										<Input type="text" {...field} value={field.value || ""} />
 									</FormControl>
 									<FormMessage />

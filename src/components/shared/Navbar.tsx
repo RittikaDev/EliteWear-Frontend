@@ -28,6 +28,7 @@ export default function Navbar() {
 		logout();
 		setIsLoading(true);
 		if (protectedRoutes.some((route) => pathname.match(route)))
+			// CHECK IF PATHNAME MATCHES WITH ANY PROTECTED ROUTES
 			router.push("/");
 	};
 
@@ -39,7 +40,7 @@ export default function Navbar() {
 					<Image src={Brand} alt="Logo" width={60} height={60} />
 					Elite Wear
 				</h1>
-				<div className="max-w-md  flex-grow">
+				<div className="max-w-md flex-grow">
 					<input
 						type="text"
 						placeholder="Search for products"
