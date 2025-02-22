@@ -1,0 +1,21 @@
+import { configureStore } from "@reduxjs/toolkit";
+import cartSlice from "./features/cartSlice";
+
+//! We will not do this
+//! This is a global variable so we will avoid this
+// const store = configureStore({});
+
+// BECAUSE THE REDUX STORE IS SHARED ACROSS REQUESTS, IT SHOULD NOT BE DEFINED AS A GLOBAL VARIABLE. INSTEAD, THE STORE SHOULD BE CREATED PER REQUEST.
+export const makeStore = () => {
+	return configureStore({
+		reducer: {
+			cart: cartSlice,
+		},
+	});
+};
+
+// Infer the type of makeStore
+export type AppStore = ReturnType<typeof makeStore>;
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];
