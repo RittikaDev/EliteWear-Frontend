@@ -1,9 +1,15 @@
-import NextAuth from "next-auth";
+import NextAuth, { Session, User } from "next-auth";
 
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { registerUser } from "@/services/AuthService";
+import { JWT } from "next-auth/jwt";
+
+interface UserWithRole extends User {
+	role: string;
+	access_token: string;
+}
 
 const handler = NextAuth({
 	providers: [
@@ -66,8 +72,26 @@ const handler = NextAuth({
 		},
 
 		// Optional: Customize session data
-		async session({ session, user }) {
-			session.user = user;
+		// async session({ session, user }) {
+		// 	session.user = user;
+		// 	return session;
+		// },
+
+		async jwt({ token, user }: { token: JWT; user: User }) {
+			if (user) {
+				const typedUser = user as UserWithRole;
+				token.role = typedUser.role;
+				token.accessToken = typedUser.access_token;
+			}
+
+			return token;
+		},
+		async session({ session, token }: { session: Session; token: JWT }) {
+			if (session.user) {
+				const typesSession = session.user as UserWithRole;
+				typesSession.role = token.role as string;
+			}
+
 			return session;
 		},
 	},

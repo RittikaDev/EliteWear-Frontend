@@ -15,19 +15,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-// import Logo from "@/app/assets/svgs/Logo";
 import Logo from "@/app/assets/svgs/Logo.png";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
-import { reCaptchaTokenVerification } from "@/services/AuthService";
+import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
 
-// import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
 
 import { loginSchema } from "./loginValidation";
 import Image from "next/image";
 import SocialLogin from "../SocialLogin/social-login";
-import { signIn } from "next-auth/react";
+// import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
 
 export default function LoginForm() {
 	const form = useForm({
@@ -35,6 +34,10 @@ export default function LoginForm() {
 	});
 
 	const [reCaptchaStatus, setReCaptchaStatus] = useState(false);
+
+	const searchParams = useSearchParams();
+	const redirect = searchParams.get("redirectPath");
+	const router = useRouter();
 
 	const {
 		formState: { isSubmitting },
@@ -44,24 +47,27 @@ export default function LoginForm() {
 		try {
 			const res = await reCaptchaTokenVerification(value!);
 			if (res?.success) setReCaptchaStatus(true);
-		} catch (err: any) {
+		} catch (err: unknown) {
 			console.error(err);
 		}
 	};
 
 	const onSubmit: SubmitHandler<FieldValues> = async (data) => {
 		try {
-			// const res = await loginUser(data);
-			// if (res?.success) toast.success(res?.message);
-			// else toast.error(res?.message);
+			const res = await loginUser(data);
+			if (res?.success) {
+				toast.success(res?.message);
+				if (redirect) router.push(redirect);
+				else router.push("/");
+			} else toast.error(res?.message);
 
-			await signIn("credentials", {
-				email: data.email,
-				password: data.password,
-				redirect: true,
-				callbackUrl: "http://localhost:3000/",
-			});
-		} catch (err: any) {
+			// await signIn("credentials", {
+			// 	email: data.email,
+			// 	password: data.password,
+			// 	redirect: true,
+			// 	callbackUrl: "http://localhost:3000/",
+			// });
+		} catch (err: unknown) {
 			console.error(err);
 		}
 	};
