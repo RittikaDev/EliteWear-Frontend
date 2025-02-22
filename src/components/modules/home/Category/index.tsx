@@ -8,6 +8,8 @@ import Link from "next/link";
 const Category = async () => {
   const { data: categories } = await getAllCategories();
 
+  console.log(categories);
+
   return (
     <NMContainer className="my-20">
       <div className="flex items-center justify-between">

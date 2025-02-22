@@ -29,10 +29,10 @@ const cartSlice = createSlice({
 
       if (productToAdd) {
         productToAdd.orderQuantity += 1;
-        return;
+        return; // THIS IS MANDOTARY OTHERWISE, BELOW LINE WILL ALSO BE RUN
       }
-
-      state.products.push({ ...action.payload, orderQuantity: 1 });
+      // ...action.payload => IS THE NEWLY ADDED PRODUCT, ONLY ONE OBJECT
+      state.products.push({ ...action.payload, orderQuantity: 1 }); // FIRST TIME WHEN SIMILAR PRODUCT IS NOT AVAILABLE IN THE CART, IT WILL ADD A NEW PROPERTY NAMED orderQuantity(NOT AVAILABLE BEFORE), AND FROM NEXT TIME IT WILL JUST INCREMENT BY ONE
     },
     incrementOrderQuantity: (state, action) => {
       const productToIncrement = state.products.find(
