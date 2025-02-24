@@ -1,26 +1,26 @@
 import ProductBanner from "@/components/modules/products/banner";
 import ProductDetails from "@/components/modules/products/productDetails";
-import NMContainer from "@/components/ui/core/NMContainer";
+import EliteContainer from "@/components/ui/core/EliteContainer";
 import { getSingleProduct } from "@/services/Product";
 
 const ProductDetailsPage = async ({
-  params,
+	params,
 }: {
-  params: Promise<{ productId: string }>;
+	params: Promise<{ productId: string }>;
 }) => {
-  const { productId } = await params;
+	const { productId } = await params;
 
-  const { data: product } = await getSingleProduct(productId);
+	const { data: product } = await getSingleProduct(productId);
 
-  return (
-    <NMContainer>
-      <ProductBanner
-        title="Product Details"
-        path="Home - Products - Product Details"
-      />
-      <ProductDetails product={product} />
-    </NMContainer>
-  );
+	return (
+		<EliteContainer>
+			<ProductBanner
+				title="Product Details"
+				path="Home - Products - Product Details"
+			/>
+			<ProductDetails product={product} />
+		</EliteContainer>
+	);
 };
 
 export default ProductDetailsPage;
